@@ -26,8 +26,7 @@ class App extends Component {
         search: '',
         isSearching: false,
         movies: '',
-        similarMovies: null,
-        fullMovie: ''
+        similarMovies: null
     }
 
     componentDidMount() {
@@ -45,7 +44,6 @@ class App extends Component {
         const apiKey = '565c585a7ed3373dbe0baaa49fa52022';
         axios.get(`/search/movie?api_key=${apiKey}&language=en-US&query=${search}&page=1`)
             .then(res => {
-                // console.log('[res.data]', res.data);
                 const { results } = res.data;
                 this.setState({
                     movies: results
@@ -72,7 +70,7 @@ class App extends Component {
         this.setState({ isSearching: true })
         axios.get(`/movie/${movieId}/similar?api_key=${apiKey}&language=en-US&page=1`)
             .then(res => {
-                // console.log('[res.data]', res.data);
+                console.log('[res.data]', res.data);
                 const { results } = res.data;
                 this.setState({
                     similarMovies: results.slice(0,3)
@@ -87,24 +85,8 @@ class App extends Component {
             )
     }
 
-    getFullMovie = (movieId) => {            
-        axios.get(`/movie/${movieId}?api_key=565c585a7ed3373dbe0baaa49fa52022&language=en-US`)
-            .then(res => {
-                const result  = res.data;
-                this.setState({
-                    fullMovie: result
-                })
-            })
-            .catch(error => {
-                console.log('[error]', error);
-            })
-            .finally(
-                console.log(this.state.fullMovie)
-            )
-    }
-
     render() {
-        const { movies, search, isSearching, similarMovies, fullMovie } = this.state
+        const { movies, search, isSearching, similarMovies } = this.state
         return (
             <div className="app">
                 <div className="app__wrapper">
@@ -114,6 +96,7 @@ class App extends Component {
                         onChange={this.onChangeInputHandler}
                         searchMovies={this.searchMoviesHandler}
                     /> 
+
                     <Route path="/404" exact component={ErrorPage} />
                     <Switch>
                         <Route path="/movies/:movieId" render={( {match} ) => (
@@ -122,8 +105,6 @@ class App extends Component {
                                 movies={movies}
                                 getSimilarMovies={this.getSimilarMovies}
                                 similarMovies={similarMovies}
-                                fullMovie={fullMovie}
-                                getFullMovie={this.getFullMovie}
                             />
                             )} />
                         {/* <Route path="/favorite" render={(props) => (
@@ -149,5 +130,5 @@ class App extends Component {
 };
 
 
+export default App;
 
-export default (App);
